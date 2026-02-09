@@ -54,7 +54,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, user = '
 
   const menuItems = [
     { id: ViewState.DASHBOARD, label: 'HOME', icon: LayoutGrid },
-    { id: ViewState.QA, label: 'Q&A', icon: MessageCircle },
+
     { id: ViewState.UPLOADS, label: 'NOTES', icon: FolderOpen },
     { id: ViewState.ROADMAP, label: 'PLAN', icon: CalendarDays },
     { id: ViewState.QUIZ, label: 'EXAMS', icon: Brain },

@@ -5,7 +5,7 @@ import { UploadView } from './components/UploadView';
 import { RoadmapView } from './components/RoadmapView';
 import { QuizView } from './components/QuizView';
 import { AnalyticsView } from './components/AnalyticsView';
-import { QAView } from './components/QAView';
+
 import { LoginView } from './components/LoginView';
 import { BootSequence } from './components/BootSequence';
 import { ViewState, UploadedFile, StudySession, Quiz, AnalyticsData, ExamDetails, GeneratedSet } from './types';
@@ -239,8 +239,6 @@ const App: React.FC = () => {
         return <QuizView quizzes={quizzes} onCreateQuiz={handleGenerateQuiz} loading={loading} uploads={uploads} />;
       case ViewState.ANALYTICS:
         return <AnalyticsView data={analytics} />;
-      case ViewState.QA:
-        return <QAView />;
       default:
         return <Dashboard
           sessions={sessions}

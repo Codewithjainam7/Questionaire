@@ -5,7 +5,6 @@ export enum ViewState {
   QUIZ = 'QUIZ',
   ANALYTICS = 'ANALYTICS',
   SETTINGS = 'SETTINGS',
-  QA = 'QA'
 }
 
 export interface ExamDetails {
