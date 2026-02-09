@@ -71,21 +71,52 @@ export const UploadView: React.FC<UploadViewProps> = ({ files, onUpload, history
     }, [chatMessages, configMode, expandedSnippets]);
 
     const [progress, setProgress] = useState(0);
+    const [estimatedTime, setEstimatedTime] = useState(0);
 
     // --- Handlers ---
 
     const processFile = async (file: File) => {
+        if (processingFile) return; // Prevent double submission
         setProcessingFile(true);
         setProcessingStatus('Initializing Analysis protocols...');
         setProgress(0);
 
-        // Simulate progress for better UX
+        // Calculate estimated time based on file size (heuristic: ~5s per MB, min 5s)
+        const sizeMB = file.size / (1024 * 1024);
+        const estSeconds = Math.max(5, Math.ceil(sizeMB * 10)); // ~10s/MB for deep RAG
+        setEstimatedTime(estSeconds);
+
+        let timeLeft = estSeconds;
+
+        // Simulate realistic analysis steps
+        const steps = [
+            "Scanning document structure...",
+            "Extracting text content...",
+            "Identifying key topics...",
+            "Analyzing semantic relationships...",
+            "Generating knowledge embeddings...",
+            "Calibrating AI model..."
+        ];
+
+        const updateInterval = 500; // Update every 500ms
+        const totalUpdates = (estSeconds * 1000) / updateInterval;
+        const incrementPerUpdate = 95 / totalUpdates; // Target 95% at estimated time
+
         const progressInterval = setInterval(() => {
             setProgress(prev => {
-                if (prev >= 90) return prev;
-                return prev + Math.floor(Math.random() * 5) + 1;
+                if (prev >= 95) return prev;
+
+                // Update status text based on progress milestones
+                const stepIndex = Math.floor((prev / 100) * steps.length);
+                if (steps[stepIndex]) {
+                    setProcessingStatus(steps[stepIndex]);
+                }
+
+                return Math.min(95, prev + incrementPerUpdate);
             });
-        }, 500);
+
+            setEstimatedTime(prev => Math.max(0, prev - (updateInterval / 1000))); // Countdown
+        }, updateInterval);
 
         try {
             // Parallel execution: frontend analysis + backend RAG ingestion
@@ -95,7 +126,6 @@ export const UploadView: React.FC<UploadViewProps> = ({ files, onUpload, history
             // Only upload to RAG backend if it's a PDF
             let ragPromise: Promise<any> = Promise.resolve({ success: true, skipped: true });
             if (file.type === 'application/pdf') {
-                setTimeout(() => setProcessingStatus('Ingesting into Knowledge Base...'), 2000);
                 ragPromise = uploadPDF(file);
             }
 
@@ -103,7 +133,14 @@ export const UploadView: React.FC<UploadViewProps> = ({ files, onUpload, history
 
             clearInterval(progressInterval);
             setProgress(100);
-            setProcessingStatus('Finalizing...');
+            setEstimatedTime(0);
+
+            if (file.type === 'application/pdf' && ragResult.success) {
+                setProcessingStatus(`Ingested ${ragResult.total_pages} pages successfully!`);
+            } else {
+                setProcessingStatus('Finalizing...');
+            }
+
 
             // Small delay to show 100%
             await new Promise(resolve => setTimeout(resolve, 500));
@@ -196,6 +233,7 @@ export const UploadView: React.FC<UploadViewProps> = ({ files, onUpload, history
             setProcessingFile(false);
             setProcessingStatus('');
             setProgress(0);
+            setEstimatedTime(0);
         }
     };
 
@@ -507,7 +545,10 @@ export const UploadView: React.FC<UploadViewProps> = ({ files, onUpload, history
                                         </div>
                                         <div className="flex justify-between w-full text-[10px] font-bold uppercase tracking-widest text-white/40">
                                             <span>{processingStatus}</span>
-                                            <span>{progress}%</span>
+                                            <div className="flex items-center gap-2">
+                                                <span>{Math.round(progress)}%</span>
+                                                {estimatedTime > 0 && <span className="text-brand-primary">~{Math.ceil(estimatedTime)}s remaining</span>}
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (

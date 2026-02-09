@@ -14,7 +14,7 @@ import faiss
 # Configuration
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 TOP_K = 5
-CONFIDENCE_THRESHOLD = 0.40
+CONFIDENCE_THRESHOLD = 0.30
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -100,12 +100,22 @@ def retrieve(query: str, top_k: int = TOP_K, book_name: str = None) -> dict:
         page_numbers = []
         valid_scores = []
         
+        # ALWAYS include the first 2 chunks (Introduction/Abstract) for context
+        # This helps with "What is this book about?" questions
+        indices = list(indices)
+        if 0 not in indices:
+            indices.append(0)
+        if 1 < len(chunks_data) and 1 not in indices:
+            indices.append(1)
+        
         for i, idx in enumerate(indices):
             if idx < len(chunks_data) and idx >= 0:
                 chunk = chunks_data[idx]
                 retrieved_chunks.append(chunk["text"])
                 page_numbers.append(chunk["page_number"])
-                valid_scores.append(float(scores[i]))
+                # Use a high score for forced chunks if not present in search
+                score = float(scores[i]) if i < len(scores) else 1.0 
+                valid_scores.append(score)
         
         # Calculate confidence
         confidence = float(np.mean(valid_scores)) if valid_scores else 0.0

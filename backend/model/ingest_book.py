@@ -14,8 +14,8 @@ from sentence_transformers import SentenceTransformer
 import faiss
 
 # Configuration
-CHUNK_SIZE = 700  # tokens
-CHUNK_OVERLAP = 120  # tokens
+CHUNK_SIZE = 384  # tokens (Aligned with all-MiniLM-L6-v2 max sequence)
+CHUNK_OVERLAP = 50  # tokens
 EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
 # Paths
@@ -113,7 +113,8 @@ def generate_embeddings(chunks: list[dict], model_name: str = EMBEDDING_MODEL) -
     """Generate embeddings for all chunks using SentenceTransformers."""
     model = SentenceTransformer(model_name)
     texts = [chunk["text"] for chunk in chunks]
-    embeddings = model.encode(texts, show_progress_bar=True, convert_to_numpy=True)
+    # Use batch_size=64 for faster CPU processing (default is 32)
+    embeddings = model.encode(texts, batch_size=64, show_progress_bar=True, convert_to_numpy=True)
     return embeddings
 
 
