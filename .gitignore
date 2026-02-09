@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Environment files
+.env
+backend/.env
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Vector store (large files)
+backend/vector_store/*.faiss
+backend/metadata.pkl
+backend/query_history.db
+
+# Uploads
+backend/uploads/*.pdf
