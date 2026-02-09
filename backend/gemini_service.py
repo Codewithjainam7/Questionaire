@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuration
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyA6YsmIQ1uODrZlAOVyEWVULMtjZRq3TZ4")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 MODEL_NAME = "gemini-1.5-flash"
 
 # Configure Gemini
