@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduHub Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              void: '#020410',
+              glass: {
+                base: 'rgba(255, 255, 255, 0.03)',
+                border: 'rgba(255, 255, 255, 0.08)',
+                highlight: 'rgba(255, 255, 255, 0.15)',
+              },
+              brand: {
+                indigo: '#3b82f6',
+                violet: '#06b6d4',
+                primary: '#3b82f6',
+                emerald: '#10b981',
+                rose: '#f43f5e',
+                accent: '#06b6d4'
+              }
+            },
+            animation: {
+              'float': 'float 8s ease-in-out infinite',
+              'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'fade-in': 'fadeIn 0.6s ease-out forwards',
+              'scan': 'scan 3s linear infinite',
+              'spin-reverse': 'spinReverse 12s linear infinite',
+              'twinkle': 'twinkle 4s ease-in-out infinite',
+              'grid-flow': 'gridFlow 20s linear infinite',
+              'scale-in': 'scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              scan: {
+                '0%': { transform: 'translateY(-100%)' },
+                '100%': { transform: 'translateY(100%)' },
+              },
+              spinReverse: {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(-360deg)' },
+              },
+              twinkle: {
+                '0%, 100%': { opacity: '0', transform: 'scale(0.5)' },
+                '50%': { opacity: '0.8', transform: 'scale(1.2)' },
+              },
+              gridFlow: {
+                '0%': { transform: 'translateY(0)' },
+                '100%': { transform: 'translateY(50px)' },
+              },
+              scaleIn: {
+                '0%': { transform: 'scale(0.95)', opacity: '0' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      body {
+        background-color: #020410;
+        min-height: 100vh;
+        margin: 0;
+        overflow-x: hidden;
+        color: #F8FAFC;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::-webkit-scrollbar { width: 4px; height: 4px; }
+      ::-webkit-scrollbar-track { background: #020410; }
+      ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 2px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.6); }
+      
+      .tilt-card {
+        transform-style: preserve-3d;
+        transform: perspective(1000px);
+      }
+      .tilt-content {
+        transform: translateZ(20px);
+      }
+      
+      .aurora-blob {
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(120px);
+        opacity: 0.3;
+        z-index: -1;
+        animation: float 10s infinite ease-in-out;
+      }
+
+      .bg-grid-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+        z-index: -2;
+        perspective: 1000px;
+        pointer-events: none;
+      }
+      
+      .bg-grid {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        background-image: 
+          linear-gradient(rgba(59, 130, 246, 0.07) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.07) 1px, transparent 1px);
+        background-size: 50px 50px;
+        transform: rotateX(45deg);
+        animation: gridFlow 20s linear infinite;
+        mask-image: radial-gradient(circle at center, black 30%, transparent 70%);
+      }
+
+      .star {
+        position: fixed;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(59, 130, 246, 0.3);
+        border-radius: 4px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(59, 130, 246, 0.5);
+      }
+
+      @keyframes shrink {
+        from { width: 100%; }
+        to { width: 0%; }
+      }
+
+      .cursor-glow {
+        position: fixed;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: opacity 0.3s ease;
+        opacity: 0;
+      }
+
+      body:hover .cursor-glow {
+        opacity: 1;
+      }
+
+      .fill-mode-forwards {
+        animation-fill-mode: forwards;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.5.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "jspdf": "https://esm.sh/jspdf@2.5.1"
+  }
+}
+</script>
+</head>
+  <body>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div id="root"></div>
+    <script>
+      const glow = document.getElementById('cursorGlow');
+      document.addEventListener('mousemove', (e) => {
+        glow.style.left = e.clientX + 'px';
+        glow.style.top = e.clientY + 'px';
+      });
+    </script>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>
